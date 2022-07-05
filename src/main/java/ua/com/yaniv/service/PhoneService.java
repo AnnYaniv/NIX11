@@ -1,16 +1,18 @@
 package ua.com.yaniv.service;
 
-import ua.com.yaniv.model.Manufacturer;
+import ua.com.yaniv.model.enums.CommunicationStandard;
+import ua.com.yaniv.model.enums.Manufacturer;
 import ua.com.yaniv.model.Phone;
 import ua.com.yaniv.repository.PhoneRepository;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 public class PhoneService {
     private static final Random RANDOM = new Random();
-    private static final PhoneRepository REPOSITORY = new PhoneRepository();
+    private static final PhoneRepository REPOSITORY = PhoneRepository.getInstance();
 
     public void createAndSavePhones(int count) {
         List<Phone> phones = new LinkedList<>();
@@ -20,7 +22,9 @@ public class PhoneService {
                     RANDOM.nextInt(500),
                     RANDOM.nextDouble(1000.0),
                     "Model-" + RANDOM.nextInt(10),
-                    getRandomManufacturer()
+                    getRandomManufacturer(),
+                    RANDOM.nextInt(6),
+                    getRandomCommunicationStandart()
             ));
         }
         REPOSITORY.saveAll(phones);
@@ -32,9 +36,32 @@ public class PhoneService {
         return values[index];
     }
 
+    private CommunicationStandard getRandomCommunicationStandart() {
+        final CommunicationStandard[] values = CommunicationStandard.values();
+        final int index = RANDOM.nextInt(values.length);
+        return values[index];
+    }
+
     public void printAll() {
         for (Phone phone : REPOSITORY.getAll()) {
-            System.out.println(phone); 
+            System.out.println(phone);
         }
+    }
+
+    public void save(Phone phone) {
+        REPOSITORY.save(phone);
+    }
+
+    public boolean update(String id, Phone phone) {
+        phone.setId(id);
+        return REPOSITORY.update(phone);
+    }
+
+    public boolean delete(String id) {
+        return REPOSITORY.delete(id);
+    }
+
+    public Optional<Phone> findById(String id) {
+        return REPOSITORY.findById(id);
     }
 }

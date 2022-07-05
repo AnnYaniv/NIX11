@@ -1,20 +1,20 @@
 package ua.com.yaniv.repository;
 
-import ua.com.yaniv.model.Phone;
+import ua.com.yaniv.model.Product;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface CrudRepository {
-    void save(Phone phone);
+public interface CrudRepository<E extends Product> {
+    void save(E product);
 
-    void saveAll(List<Phone> phones);
+    void saveAll(List<E> products);
 
-    boolean update(Phone phone);
+    boolean update(E product);
 
     boolean delete(String id);
 
-    List<Phone> getAll();
+    List<E> getAll();
 
-    Optional<Phone> findById(String id);
+    Optional<E> findById(String id);
 }

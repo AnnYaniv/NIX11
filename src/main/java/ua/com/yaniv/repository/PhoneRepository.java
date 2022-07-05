@@ -1,36 +1,46 @@
 package ua.com.yaniv.repository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ua.com.yaniv.model.Phone;
 
 import java.util.*;
 
-public class PhoneRepository implements CrudRepository {
+public class PhoneRepository implements CrudRepository<Phone> {
+    private static final Logger logger = LoggerFactory.getLogger(PhoneRepository.class);
     private final List<Phone> phones;
+    private static PhoneRepository instance;
 
-    public PhoneRepository() {
+    private PhoneRepository() {
         phones = new LinkedList<>();
     }
 
-    @Override
-    public void save(Phone phone) {
-        phones.add(phone);
+    public static PhoneRepository getInstance() {
+        if (instance == null) instance = new PhoneRepository();
+        return instance;
     }
 
     @Override
-    public void saveAll(List<Phone> phones) {
-        for (Phone phone : phones) {
+    public void save(Phone product) {
+        phones.add(product);
+        logger.info("{} was saved", product);
+    }
+
+    @Override
+    public void saveAll(List<Phone> products) {
+        for (Phone phone : products) {
             save(phone);
         }
     }
 
     @Override
-    public boolean update(Phone phone) {
-        final Optional<Phone> result = findById(phone.getId());
+    public boolean update(Phone product) {
+        final Optional<Phone> result = findById(product.getId());
         if (result.isEmpty()) {
             return false;
         }
         final Phone originPhone = result.get();
-        PhoneCopy.copy(phone, originPhone);
+        PhoneCopy.copy(product, originPhone);
         return true;
     }
 
@@ -41,9 +51,11 @@ public class PhoneRepository implements CrudRepository {
             final Phone phone = iterator.next();
             if (phone.getId().equals(id)) {
                 iterator.remove();
+                logger.info("Product with id {}, was deleted", id);
                 return true;
             }
         }
+        logger.info("Product with id {}, wasn`t deleted", id);
         return false;
     }
 
@@ -71,6 +83,8 @@ public class PhoneRepository implements CrudRepository {
             to.setCount(from.getCount());
             to.setPrice(from.getPrice());
             to.setTitle(from.getTitle());
+            to.setCommunicationStandard(from.getCommunicationStandard());
+            to.setNumbersOfMainCameras(from.getNumbersOfMainCameras());
         }
     }
 }
