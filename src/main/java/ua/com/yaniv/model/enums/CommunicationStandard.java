@@ -1,5 +1,4 @@
 package ua.com.yaniv.model.enums;
-
 public enum CommunicationStandard {
-    _2G, _3G, _4G, _5G
+    NETWORK_2G, NETWORK_3G, NETWORK_4G, NETWORK_5G
 }

@@ -22,7 +22,7 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-
+        String choice;
         System.out.println("Create repositories with random products:");
         PHONE_SERVICE.createAndSavePhones(5);
         LAPTOP_SERVICE.createAndSaveLaptops(5);
@@ -33,11 +33,15 @@ public class Main {
             updateExistingProduct(in);
             deleteProduct(in);
             findById(in);
-            System.out.println("------------");
+            System.out.print("Print 'exit' - to exit, another letters to continue");
+            choice = in.nextLine();
+            if (choice.equals("exit")) {
+                break;
+            }
         }
     }
 
-    public static void findById(Scanner in){
+    public static void findById(Scanner in) {
         String choice, id;
         System.out.print("Print l - for find laptop, p - for find phone, s - for find smart watch, another letters to skip: ");
         choice = in.nextLine();
@@ -72,10 +76,11 @@ public class Main {
                     System.out.println(result2.get());
                 }
             }
+            default -> System.out.println("Skipped");
         }
     }
 
-    public static void printAll(){
+    public static void printAll() {
         PHONE_SERVICE.printAll();
         System.out.println("------------");
         LAPTOP_SERVICE.printAll();
@@ -83,7 +88,7 @@ public class Main {
         SMART_WATCH_SERVICE.printAll();
     }
 
-    public static void addNewProducts(Scanner in){
+    public static void addNewProducts(Scanner in) {
         String choice;
         System.out.print("Print l - for add new laptop, p - for add new phone, s - for add new smart watch, another letters to skip: ");
         choice = in.nextLine();
@@ -91,10 +96,12 @@ public class Main {
             case "l" -> LAPTOP_SERVICE.save(writeLaptop(in, true));
             case "p" -> PHONE_SERVICE.save(writePhone(in, true));
             case "s" -> SMART_WATCH_SERVICE.save(writeSmartWatch(in, true));
+            default -> System.out.println("Skipped");
+
         }
     }
 
-    public static void updateExistingProduct(Scanner in){
+    public static void updateExistingProduct(Scanner in) {
         String choice, id;
         System.out.print("Print l - for update laptop, p - for update phone, s - for update smart watch, another letters to skip: ");
         choice = in.nextLine();
@@ -117,10 +124,11 @@ public class Main {
                 if (SMART_WATCH_SERVICE.findById(id).isEmpty()) System.out.println("Product not found");
                 else SMART_WATCH_SERVICE.update(id, writeSmartWatch(in, false));
             }
+            default -> System.out.println("Skipped");
         }
     }
 
-    public static void deleteProduct(Scanner in){
+    public static void deleteProduct(Scanner in) {
         String choice, id;
         boolean res;
         System.out.print("Print l - for delete laptop, p - for delete phone, s - for delete smart watch, another letters to skip: ");
@@ -147,11 +155,12 @@ public class Main {
                 if (res) System.out.println("Product was deleted");
                 else System.out.println("Product wasn`t deleted");
             }
+            default -> System.out.println("Skipped");
         }
     }
 
-    public static Laptop writeLaptop(Scanner in, boolean isCreate){
-        String title,model = "",temp;
+    public static Laptop writeLaptop(Scanner in, boolean isCreate) {
+        String title, model = "", temp;
         int count;
         double price;
         Manufacturer manufacturer = Manufacturer.APPLE;
@@ -165,27 +174,27 @@ public class Main {
         System.out.print("Price: ");
         price = in.nextDouble();
         in.nextLine();
-        if(isCreate){
+        if (isCreate) {
             System.out.print("Model: ");
             model = in.nextLine();
 
-            System.out.print("Manufacturer (SAMSUNG, APPLE, XIAOMI, HUAWEI, ASUS): ");
+            System.out.printf("Manufacturer (%s): ", getManufacturers());
             temp = in.nextLine();
             manufacturer = Manufacturer.valueOf(temp);
         }
-        System.out.print("DriveType (HDD, SDD, HDD_AND_SDD): ");
+        System.out.printf("DriveType (%s): ", getDriveType());
         temp = in.nextLine();
         dt = DriveType.valueOf(temp);
 
-        System.out.print("OS (Windows, Linux, MacOS, ChromeOS):");
+        System.out.printf("OS (%s):", getOS());
         temp = in.nextLine();
         os = OS.valueOf(temp);
 
-        return new Laptop(title,count,price,model,manufacturer,dt,os);
+        return new Laptop(title, count, price, model, manufacturer, dt, os);
     }
 
-    public static Phone writePhone(Scanner in, boolean isCreate){
-        String title,model = " ",temp;
+    public static Phone writePhone(Scanner in, boolean isCreate) {
+        String title, model = " ", temp;
         int count;
         double price;
         Manufacturer manufacturer = Manufacturer.APPLE;
@@ -199,26 +208,26 @@ public class Main {
         System.out.print("Price: ");
         price = in.nextDouble();
         in.nextLine();
-        if(isCreate){
+        if (isCreate) {
             System.out.print("Model: ");
             model = in.nextLine();
 
-            System.out.print("Manufacturer (SAMSUNG, APPLE, XIAOMI, HUAWEI, ASUS): ");
+            System.out.printf("Manufacturer (%s): ", getManufacturers());
             temp = in.nextLine();
             manufacturer = Manufacturer.valueOf(temp);
         }
         System.out.print("Number of main camera: ");
         numbersOfMainCameras = in.nextInt();
         in.nextLine();
-        System.out.print("Communication Standart (_2G, _3G, _4G, _5G):");
+        System.out.printf("Communication Standart (%s):", getCommunicationStandard());
         temp = in.nextLine();
         communicationStandard = CommunicationStandard.valueOf(temp);
 
-        return new Phone(title, count, price, model, manufacturer, numbersOfMainCameras,communicationStandard);
+        return new Phone(title, count, price, model, manufacturer, numbersOfMainCameras, communicationStandard);
     }
 
-    public static SmartWatch writeSmartWatch (Scanner in, boolean isCreate){
-        String title,model = " ",temp;
+    public static SmartWatch writeSmartWatch(Scanner in, boolean isCreate) {
+        String title, model = " ", temp;
         int count;
         double price;
         Manufacturer manufacturer = Manufacturer.APPLE;
@@ -231,11 +240,11 @@ public class Main {
         System.out.print("Price: ");
         price = in.nextDouble();
         in.nextLine();
-        if(isCreate){
+        if (isCreate) {
             System.out.print("Model: ");
             model = in.nextLine();
 
-            System.out.print("Manufacturer (SAMSUNG, APPLE, XIAOMI, HUAWEI, ASUS): ");
+            System.out.printf("Manufacturer (%s): ", getManufacturers());
             temp = in.nextLine();
             manufacturer = Manufacturer.valueOf(temp);
         }
@@ -243,5 +252,45 @@ public class Main {
         daysWithoutCharge = in.nextInt();
         in.nextLine();
         return new SmartWatch(title, count, price, model, manufacturer, daysWithoutCharge);
+    }
+
+    private static String getManufacturers() {
+        StringBuilder sb = new StringBuilder();
+        Manufacturer[] values = Manufacturer.values();
+        for (Manufacturer manufacturer : values) {
+            sb.append(manufacturer);
+            sb.append(" ");
+        }
+        return sb.toString();
+    }
+
+    private static String getOS() {
+        StringBuilder sb = new StringBuilder();
+        OS[] values = OS.values();
+        for (OS value : values) {
+            sb.append(value);
+            sb.append(" ");
+        }
+        return sb.toString();
+    }
+
+    private static String getCommunicationStandard() {
+        StringBuilder sb = new StringBuilder();
+        CommunicationStandard[] values = CommunicationStandard.values();
+        for (CommunicationStandard value : values) {
+            sb.append(value);
+            sb.append(" ");
+        }
+        return sb.toString();
+    }
+
+    private static String getDriveType() {
+        StringBuilder sb = new StringBuilder();
+        DriveType[] values = DriveType.values();
+        for (DriveType value : values) {
+            sb.append(value);
+            sb.append(" ");
+        }
+        return sb.toString();
     }
 }
