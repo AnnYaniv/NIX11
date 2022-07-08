@@ -1,5 +1,7 @@
 package ua.com.yaniv.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ua.com.yaniv.model.Laptop;
 import ua.com.yaniv.model.enums.DriveType;
 import ua.com.yaniv.model.enums.Manufacturer;
@@ -13,6 +15,7 @@ import java.util.Random;
 
 public class LaptopService {
     private static final Random RANDOM = new Random();
+    private static final Logger logger = LoggerFactory.getLogger(LaptopService.class);
     private static final LaptopRepository REPOSITORY = LaptopRepository.getInstance();
 
     public void createAndSaveLaptops(int count) {
@@ -28,11 +31,23 @@ public class LaptopService {
                     getRandomOS()
             ));
         }
-        REPOSITORY.saveAll(laptops);
+        for (Laptop item : laptops) {
+            save(item);
+        }
     }
 
-    public void save(Laptop laptop) {
-        REPOSITORY.save(laptop);
+    public boolean save(Laptop laptop) {
+        try {
+            REPOSITORY.save(laptop);
+            return true;
+        } catch (IllegalArgumentException ex) {
+            logger.warn("Could not save null");
+            return false;
+        }
+    }
+
+    public void saveAll(List<Laptop> products) {
+        REPOSITORY.saveAll(products);
     }
 
     public boolean delete(String id) {

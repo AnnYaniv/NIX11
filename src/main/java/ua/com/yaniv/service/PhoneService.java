@@ -1,5 +1,6 @@
 package ua.com.yaniv.service;
 
+import ua.com.yaniv.model.Laptop;
 import ua.com.yaniv.model.enums.CommunicationStandard;
 import ua.com.yaniv.model.enums.Manufacturer;
 import ua.com.yaniv.model.Phone;
@@ -51,7 +52,9 @@ public class PhoneService {
     public void save(Phone phone) {
         REPOSITORY.save(phone);
     }
-
+    public void saveAll(List<Phone> products) {
+        REPOSITORY.saveAll(products);
+    }
     public boolean update(String id, Phone phone) {
         phone.setId(id);
         return REPOSITORY.update(phone);

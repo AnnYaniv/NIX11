@@ -22,8 +22,14 @@ public class SmartWatchRepository implements CrudRepository<SmartWatch> {
 
     @Override
     public void save(SmartWatch product) {
-        SMART_WATCHES.add(product);
-        logger.info("{} was saved", product);
+        if (product == null) {
+            final IllegalArgumentException exception = new IllegalArgumentException("Cannot save a null phone");
+            logger.error(exception.getMessage(), exception);
+            throw exception;
+        } else {
+            SMART_WATCHES.add(product);
+            logger.info("{} was saved", product);
+        }
     }
 
     @Override

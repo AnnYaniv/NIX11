@@ -1,5 +1,6 @@
 package ua.com.yaniv;
 
+import org.apache.commons.lang3.EnumUtils;
 import ua.com.yaniv.model.Laptop;
 import ua.com.yaniv.model.Phone;
 import ua.com.yaniv.model.SmartWatch;
@@ -21,12 +22,19 @@ public class Main {
     private static final SmartWatchService SMART_WATCH_SERVICE = new SmartWatchService();
 
     public static void main(String[] args) {
+
         Scanner in = new Scanner(System.in);
+        start(in);
+    }
+
+    public static int start(Scanner in){
         String choice;
+
         System.out.println("Create repositories with random products:");
         PHONE_SERVICE.createAndSavePhones(5);
         LAPTOP_SERVICE.createAndSaveLaptops(5);
         SMART_WATCH_SERVICE.createAndSaveSmartWatches(5);
+
         while (true) {
             printAll();
             addNewProducts(in);
@@ -36,7 +44,7 @@ public class Main {
             System.out.print("Print 'exit' - to exit, another letters to continue");
             choice = in.nextLine();
             if (choice.equals("exit")) {
-                break;
+                return 0;
             }
         }
     }
@@ -97,7 +105,6 @@ public class Main {
             case "p" -> PHONE_SERVICE.save(writePhone(in, true));
             case "s" -> SMART_WATCH_SERVICE.save(writeSmartWatch(in, true));
             default -> System.out.println("Skipped");
-
         }
     }
 
@@ -168,7 +175,7 @@ public class Main {
         OS os;
 
         System.out.print("Title: ");
-        title = in.next();
+        title = in.nextLine();
         System.out.print("Count: ");
         count = in.nextInt();
         System.out.print("Price: ");
@@ -179,15 +186,30 @@ public class Main {
             model = in.nextLine();
 
             System.out.printf("Manufacturer (%s): ", getManufacturers());
-            temp = in.nextLine();
+            do {
+                temp = in.nextLine();
+                if (EnumUtils.isValidEnum(Manufacturer.class, temp))
+                    break;
+                else System.out.println("Wrong manufacturer, try again:");
+            } while (true);
             manufacturer = Manufacturer.valueOf(temp);
         }
         System.out.printf("DriveType (%s): ", getDriveType());
-        temp = in.nextLine();
+        do {
+            temp = in.nextLine();
+            if (EnumUtils.isValidEnum(DriveType.class, temp))
+                break;
+            else System.out.println("Wrong drive type, try again:");
+        } while (true);
         dt = DriveType.valueOf(temp);
 
         System.out.printf("OS (%s):", getOS());
-        temp = in.nextLine();
+        do {
+            temp = in.nextLine();
+            if (EnumUtils.isValidEnum(OS.class, temp))
+                break;
+            else System.out.println("Wrong operating system, try again:");
+        } while (true);
         os = OS.valueOf(temp);
 
         return new Laptop(title, count, price, model, manufacturer, dt, os);
@@ -202,7 +224,7 @@ public class Main {
         CommunicationStandard communicationStandard;
 
         System.out.print("Title: ");
-        title = in.next();
+        title = in.nextLine();
         System.out.print("Count: ");
         count = in.nextInt();
         System.out.print("Price: ");
@@ -213,14 +235,25 @@ public class Main {
             model = in.nextLine();
 
             System.out.printf("Manufacturer (%s): ", getManufacturers());
-            temp = in.nextLine();
+            do {
+                temp = in.nextLine();
+                if (EnumUtils.isValidEnum(Manufacturer.class, temp))
+                    break;
+                else System.out.println("Wrong manufacturer, try again:");
+            } while (true);
             manufacturer = Manufacturer.valueOf(temp);
         }
         System.out.print("Number of main camera: ");
         numbersOfMainCameras = in.nextInt();
         in.nextLine();
         System.out.printf("Communication Standart (%s):", getCommunicationStandard());
-        temp = in.nextLine();
+
+        do {
+            temp = in.nextLine();
+            if (EnumUtils.isValidEnum(CommunicationStandard.class, temp))
+                break;
+            else System.out.println("Wrong communication standard, try again:");
+        } while (true);
         communicationStandard = CommunicationStandard.valueOf(temp);
 
         return new Phone(title, count, price, model, manufacturer, numbersOfMainCameras, communicationStandard);
@@ -234,7 +267,7 @@ public class Main {
         int daysWithoutCharge;
 
         System.out.print("Title: ");
-        title = in.next();
+        title = in.nextLine();
         System.out.print("Count: ");
         count = in.nextInt();
         System.out.print("Price: ");
@@ -245,7 +278,12 @@ public class Main {
             model = in.nextLine();
 
             System.out.printf("Manufacturer (%s): ", getManufacturers());
-            temp = in.nextLine();
+            do {
+                temp = in.nextLine();
+                if (EnumUtils.isValidEnum(Manufacturer.class, temp))
+                    break;
+                else System.out.println("Wrong manufacturer, try again:");
+            } while (true);
             manufacturer = Manufacturer.valueOf(temp);
         }
         System.out.print("Days without charge: ");
@@ -293,4 +331,5 @@ public class Main {
         }
         return sb.toString();
     }
+
 }

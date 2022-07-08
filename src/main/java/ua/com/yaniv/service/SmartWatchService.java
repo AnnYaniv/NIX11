@@ -1,5 +1,6 @@
 package ua.com.yaniv.service;
 
+import ua.com.yaniv.model.Laptop;
 import ua.com.yaniv.model.SmartWatch;
 import ua.com.yaniv.model.enums.Manufacturer;
 import ua.com.yaniv.repository.SmartWatchRepository;
@@ -31,7 +32,9 @@ public class SmartWatchService {
     public void save(SmartWatch smartWatch) {
         REPOSITORY.save(smartWatch);
     }
-
+    public void saveAll(List<SmartWatch> products) {
+        REPOSITORY.saveAll(products);
+    }
     public boolean delete(String id) {
         return REPOSITORY.delete(id);
     }
