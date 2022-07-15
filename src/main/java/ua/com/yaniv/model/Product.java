@@ -12,8 +12,8 @@ import java.util.UUID;
 public abstract class Product {
     protected String id;
     protected String title;
-    protected final String model;
-    protected final Manufacturer manufacturer;
+    protected String model;
+    protected Manufacturer manufacturer;
     protected int count;
     protected double price;
 

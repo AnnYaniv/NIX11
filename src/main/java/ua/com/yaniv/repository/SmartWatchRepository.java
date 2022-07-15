@@ -33,10 +33,13 @@ public class SmartWatchRepository implements CrudRepository<SmartWatch> {
     }
 
     @Override
-    public void saveAll(List<SmartWatch> products) {
+    public boolean saveAll(List<SmartWatch> products) {
+        boolean result = true;
         for (SmartWatch smartWatch : products) {
-            save(smartWatch);
+            if ((smartWatch == null) || !findById(smartWatch.getId()).isEmpty()) result = false;
+            else save(smartWatch);
         }
+        return result;
     }
 
     @Override
@@ -51,7 +54,8 @@ public class SmartWatchRepository implements CrudRepository<SmartWatch> {
         originSmartWatch.setCount(product.getCount());
         originSmartWatch.setPrice(product.getPrice());
         originSmartWatch.setTitle(product.getTitle());
-
+        originSmartWatch.setModel(product.getModel());
+        originSmartWatch.setManufacturer(product.getManufacturer());
         return true;
     }
 

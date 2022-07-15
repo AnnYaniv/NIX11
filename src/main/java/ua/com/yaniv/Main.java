@@ -22,20 +22,15 @@ public class Main {
     private static final SmartWatchService SMART_WATCH_SERVICE = new SmartWatchService();
 
     public static void main(String[] args) {
-
         Scanner in = new Scanner(System.in);
         start(in);
     }
 
-    public static int start(Scanner in){
+    public static int start(Scanner in) {
         String choice;
 
-        System.out.println("Create repositories with random products:");
-        PHONE_SERVICE.createAndSavePhones(5);
-        LAPTOP_SERVICE.createAndSaveLaptops(5);
-        SMART_WATCH_SERVICE.createAndSaveSmartWatches(5);
-
         while (true) {
+            addAnyRandomProducts(in);
             printAll();
             addNewProducts(in);
             updateExistingProduct(in);
@@ -47,6 +42,21 @@ public class Main {
                 return 0;
             }
         }
+    }
+
+    public static void addAnyRandomProducts(Scanner in) {
+        String choice;
+        System.out.print("Print y - to add any random products, another letters to skip: ");
+        choice = in.nextLine();
+        switch (choice) {
+            case "y" -> {
+                PHONE_SERVICE.createAndSavePhones(5);
+                LAPTOP_SERVICE.createAndSaveLaptops(5);
+                SMART_WATCH_SERVICE.createAndSaveSmartWatches(5);
+            }
+            default -> System.out.println("Skipped");
+        }
+
     }
 
     public static void findById(Scanner in) {

@@ -34,10 +34,15 @@ public class LaptopRepository implements CrudRepository<Laptop> {
     }
 
     @Override
-    public void saveAll(List<Laptop> products) {
+    public boolean saveAll(List<Laptop> products) {
+        boolean result = true;
+
         for (Laptop laptop : products) {
-            save(laptop);
+            if ((laptop == null) || !findById(laptop.getId()).isEmpty()) result = false;
+
+            else save(laptop);
         }
+        return result;
     }
 
     @Override
@@ -53,7 +58,8 @@ public class LaptopRepository implements CrudRepository<Laptop> {
         originLaptop.setCount(product.getCount());
         originLaptop.setPrice(product.getPrice());
         originLaptop.setTitle(product.getTitle());
-
+        originLaptop.setModel(product.getModel());
+        originLaptop.setManufacturer(product.getManufacturer());
         return true;
 
     }
@@ -90,11 +96,6 @@ public class LaptopRepository implements CrudRepository<Laptop> {
             }
         }
         return Optional.ofNullable(result);
-    }
-
-    public static boolean resetInstance(){
-        instance = null;
-        return (instance == null);
     }
 }
 

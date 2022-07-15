@@ -1,6 +1,7 @@
 package ua.com.yaniv.service;
 
-import ua.com.yaniv.model.Laptop;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ua.com.yaniv.model.SmartWatch;
 import ua.com.yaniv.model.enums.Manufacturer;
 import ua.com.yaniv.repository.SmartWatchRepository;
@@ -12,7 +13,8 @@ import java.util.Random;
 
 public class SmartWatchService {
     private static final Random RANDOM = new Random();
-    private static final SmartWatchRepository REPOSITORY = SmartWatchRepository.getInstance();
+    private static final Logger logger = LoggerFactory.getLogger(SmartWatchService.class);
+    private final SmartWatchRepository repository = SmartWatchRepository.getInstance();
 
     public void createAndSaveSmartWatches(int count) {
         List<SmartWatch> smartWatches = new LinkedList<>();
@@ -26,30 +28,38 @@ public class SmartWatchService {
                     RANDOM.nextInt(30)
             ));
         }
-        REPOSITORY.saveAll(smartWatches);
+        repository.saveAll(smartWatches);
     }
 
-    public void save(SmartWatch smartWatch) {
-        REPOSITORY.save(smartWatch);
+    public boolean save(SmartWatch smartWatch) {
+        try {
+            repository.save(smartWatch);
+            return true;
+        } catch (IllegalArgumentException ex) {
+            logger.warn("Could not save null");
+            return false;
+        }
     }
+
     public void saveAll(List<SmartWatch> products) {
-        REPOSITORY.saveAll(products);
+        repository.saveAll(products);
     }
+
     public boolean delete(String id) {
-        return REPOSITORY.delete(id);
+        return repository.delete(id);
     }
 
     public Optional<SmartWatch> findById(String id) {
-        return REPOSITORY.findById(id);
+        return repository.findById(id);
     }
 
     public boolean update(String id, SmartWatch smartWatch) {
         smartWatch.setId(id);
-        return REPOSITORY.update(smartWatch);
+        return repository.update(smartWatch);
     }
 
     public void printAll() {
-        for (SmartWatch smartWatch : REPOSITORY.getAll()) {
+        for (SmartWatch smartWatch : repository.getAll()) {
             System.out.println(smartWatch);
         }
     }
