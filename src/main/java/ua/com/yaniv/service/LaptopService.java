@@ -1,5 +1,7 @@
 package ua.com.yaniv.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ua.com.yaniv.model.Laptop;
 import ua.com.yaniv.model.enums.DriveType;
 import ua.com.yaniv.model.enums.Manufacturer;
@@ -13,7 +15,9 @@ import java.util.Random;
 
 public class LaptopService {
     private static final Random RANDOM = new Random();
-    private static final LaptopRepository REPOSITORY = LaptopRepository.getInstance();
+    private static final Logger logger = LoggerFactory.getLogger(LaptopService.class);
+    private final LaptopRepository repository = LaptopRepository.getInstance();
+
 
     public void createAndSaveLaptops(int count) {
         List<Laptop> laptops = new LinkedList<>();
@@ -28,28 +32,39 @@ public class LaptopService {
                     getRandomOS()
             ));
         }
-        REPOSITORY.saveAll(laptops);
+        saveAll(laptops);
     }
 
-    public void save(Laptop laptop) {
-        REPOSITORY.save(laptop);
+    public boolean save(Laptop laptop) {
+        try {
+            repository.save(laptop);
+            logger.info("Save laptop");
+            return true;
+        } catch (IllegalArgumentException ex) {
+            logger.warn("Could not save null");
+            return false;
+        }
+    }
+
+    public void saveAll(List<Laptop> products) {
+        repository.saveAll(products);
     }
 
     public boolean delete(String id) {
-        return REPOSITORY.delete(id);
+        return repository.delete(id);
     }
 
     public Optional<Laptop> findById(String id) {
-        return REPOSITORY.findById(id);
+        return repository.findById(id);
     }
 
     public boolean update(String id, Laptop laptop) {
         laptop.setId(id);
-        return REPOSITORY.update(laptop);
+        return repository.update(laptop);
     }
 
     public void printAll() {
-        for (Laptop laptop : REPOSITORY.getAll()) {
+        for (Laptop laptop : repository.getAll()) {
             System.out.println(laptop);
         }
     }

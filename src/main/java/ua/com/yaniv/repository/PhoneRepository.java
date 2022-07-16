@@ -22,15 +22,25 @@ public class PhoneRepository implements CrudRepository<Phone> {
 
     @Override
     public void save(Phone product) {
-        phones.add(product);
-        logger.info("{} was saved", product);
+        if (product == null) {
+            final IllegalArgumentException exception = new IllegalArgumentException("Cannot save a null phone");
+            logger.error(exception.getMessage(), exception);
+            throw exception;
+        } else {
+            phones.add(product);
+            logger.info("{} was saved", product);
+        }
     }
 
     @Override
-    public void saveAll(List<Phone> products) {
+    public boolean saveAll(List<Phone> products) {
+        boolean result = true;
+
         for (Phone phone : products) {
-            save(phone);
+            if ((phone == null) || !findById(phone.getId()).isEmpty()) result = false;
+            else save(phone);
         }
+        return result;
     }
 
     @Override
@@ -40,7 +50,14 @@ public class PhoneRepository implements CrudRepository<Phone> {
             return false;
         }
         final Phone originPhone = result.get();
-        PhoneCopy.copy(product, originPhone);
+        originPhone.setNumbersOfMainCameras(product.getNumbersOfMainCameras());
+
+        originPhone.setCount(product.getCount());
+        originPhone.setPrice(product.getPrice());
+        originPhone.setTitle(product.getTitle());
+        originPhone.setModel(product.getModel());
+        originPhone.setManufacturer(product.getManufacturer());
+
         return true;
     }
 
@@ -76,15 +93,5 @@ public class PhoneRepository implements CrudRepository<Phone> {
             }
         }
         return Optional.ofNullable(result);
-    }
-
-    private static class PhoneCopy {
-        private static void copy(final Phone from, final Phone to) {
-            to.setCount(from.getCount());
-            to.setPrice(from.getPrice());
-            to.setTitle(from.getTitle());
-            to.setCommunicationStandard(from.getCommunicationStandard());
-            to.setNumbersOfMainCameras(from.getNumbersOfMainCameras());
-        }
     }
 }

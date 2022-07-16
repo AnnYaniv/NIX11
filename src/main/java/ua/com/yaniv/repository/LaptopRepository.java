@@ -13,6 +13,7 @@ public class LaptopRepository implements CrudRepository<Laptop> {
 
     private LaptopRepository() {
         LAPTOPS = new LinkedList<Laptop>();
+        logger.info("new instance");
     }
 
     public static LaptopRepository getInstance() {
@@ -22,15 +23,26 @@ public class LaptopRepository implements CrudRepository<Laptop> {
 
     @Override
     public void save(Laptop product) {
-        LAPTOPS.add(product);
-        logger.info("{} was saved", product);
+        if (product == null) {
+            final IllegalArgumentException exception = new IllegalArgumentException("Cannot save a null laptop");
+            logger.error(exception.getMessage(), exception);
+            throw exception;
+        } else {
+            LAPTOPS.add(product);
+            logger.info("{} was saved", product);
+        }
     }
 
     @Override
-    public void saveAll(List<Laptop> products) {
+    public boolean saveAll(List<Laptop> products) {
+        boolean result = true;
+
         for (Laptop laptop : products) {
-            save(laptop);
+            if ((laptop == null) || !findById(laptop.getId()).isEmpty()) result = false;
+
+            else save(laptop);
         }
+        return result;
     }
 
     @Override
@@ -46,7 +58,8 @@ public class LaptopRepository implements CrudRepository<Laptop> {
         originLaptop.setCount(product.getCount());
         originLaptop.setPrice(product.getPrice());
         originLaptop.setTitle(product.getTitle());
-
+        originLaptop.setModel(product.getModel());
+        originLaptop.setManufacturer(product.getManufacturer());
         return true;
 
     }

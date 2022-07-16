@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface CrudRepository<E extends Product> {
     void save(E product);
 
-    void saveAll(List<E> products);
+    boolean saveAll(List<E> products);
 
     boolean update(E product);
 
