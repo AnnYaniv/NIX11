@@ -3,13 +3,18 @@ package ua.com.yaniv;
 import org.apache.commons.lang3.EnumUtils;
 import ua.com.yaniv.model.Laptop;
 import ua.com.yaniv.model.Phone;
+import ua.com.yaniv.model.Product;
 import ua.com.yaniv.model.SmartWatch;
 import ua.com.yaniv.model.enums.CommunicationStandard;
 import ua.com.yaniv.model.enums.DriveType;
 import ua.com.yaniv.model.enums.Manufacturer;
 import ua.com.yaniv.model.enums.OS;
+import ua.com.yaniv.repository.LaptopRepository;
+import ua.com.yaniv.repository.PhoneRepository;
+import ua.com.yaniv.repository.SmartWatchRepository;
 import ua.com.yaniv.service.LaptopService;
 import ua.com.yaniv.service.PhoneService;
+import ua.com.yaniv.service.ProductService;
 import ua.com.yaniv.service.SmartWatchService;
 
 import java.util.Optional;
@@ -21,9 +26,114 @@ public class Main {
     private static final LaptopService LAPTOP_SERVICE = new LaptopService();
     private static final SmartWatchService SMART_WATCH_SERVICE = new SmartWatchService();
 
+    private static ProductService productService;
+    private static String printVar = "a";
+
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        start(in);
+        startOptionals(in);
+    }
+
+    public static int startOptionals(Scanner in) {
+        String choice;
+        System.out.println("Choose product for work with");
+        System.out.print("Print l - for laptop, p - for phone, s - for smart watch, another letters to exit: ");
+        choice = in.nextLine();
+        switch (choice) {
+            case "l" -> {
+                productService = new ProductService(LaptopRepository.getInstance());
+                printVar = "l";
+            }
+            case "p" -> {
+                productService = new ProductService(PhoneRepository.getInstance());
+                printVar = "p";
+            }
+            case "s" -> {
+                productService = new ProductService(SmartWatchRepository.getInstance());
+                printVar = "s";
+            }
+            default -> {
+                System.out.println("Skipped");
+                return 1;
+            }
+        }
+        addAnyRandomProducts(in);
+        while (true) {
+            printAll();
+            System.out.print("Print 'y' if you want check manufacturer for product with specified id: ");
+            choice = in.nextLine();
+            if (choice.equals("y")) checkManufacturer(in);
+            else System.out.println("Skipped");
+
+            System.out.print("Print 'y' if you want buy product with specified id: ");
+            choice = in.nextLine();
+            if (choice.equals("y")) buyProduct(in);
+            else System.out.println("Skipped");
+
+            System.out.print("Print 'y' if you want to find product with specified id and manufacturer\n" +
+                    "(NOTE!) If product dont exist, it was created\n" +
+                    "If product exist with another manufacturer, it will be changed: ");
+            choice = in.nextLine();
+            if (choice.equals("y")) System.out.println(findOrCreateWithManufacter(in));
+            else System.out.println("Skipped");
+
+            System.out.print("Print 'y' if you want to find product with specified id\n" +
+                    "(NOTE!) If product dont exist, it was created: ");
+            choice = in.nextLine();
+            if (choice.equals("y")) System.out.println(findOrCreateWithId(in));
+            else System.out.println("Skipped");
+
+            System.out.print("Print 'exit' - to exit, another letters to continue: ");
+            choice = in.nextLine();
+            if (choice.equals("exit")) {
+                return 0;
+            }
+        }
+    }
+
+    public static Product findOrCreateWithId(Scanner in) {
+        String id = getId(in);
+        return productService.returnOrCreateWithId(id);
+    }
+
+    public static Product findOrCreateWithManufacter(Scanner in) {
+        String id = getId(in);
+        Manufacturer manufacturer = getManufacturer(in);
+        return productService.returnProductWithManufacturerOrSet(id, manufacturer);
+    }
+
+    public static void buyProduct(Scanner in) {
+        String id = getId(in);
+        if (productService.buySingleProduct(id)) {
+            System.out.println("Bought product with id '" + id + "'");
+        } else {
+            System.out.println("Failed to buy product with id '" + id + "'");
+        }
+    }
+
+    ;
+
+    public static void checkManufacturer(Scanner in) {
+        String id = getId(in);
+        Manufacturer manufacturer = getManufacturer(in);
+        System.out.println(productService.returnProductInfoWithManufacturer(id, manufacturer));
+    }
+
+    public static String getId(Scanner in) {
+        System.out.print("Enter the ID of the product:");
+        return in.nextLine();
+    }
+
+    public static Manufacturer getManufacturer(Scanner in) {
+        String temp;
+        System.out.printf("Enter the manufacturer(%s): ", getManufacturers());
+        do {
+            temp = in.nextLine();
+            if (EnumUtils.isValidEnum(Manufacturer.class, temp))
+                break;
+            else System.out.println("Wrong manufacturer, try again:");
+        } while (true);
+        return Manufacturer.valueOf(temp);
     }
 
     public static int start(Scanner in) {
@@ -43,6 +153,7 @@ public class Main {
             }
         }
     }
+
 
     public static void addAnyRandomProducts(Scanner in) {
         String choice;
@@ -99,11 +210,23 @@ public class Main {
     }
 
     public static void printAll() {
-        PHONE_SERVICE.printAll();
-        System.out.println("------------");
-        LAPTOP_SERVICE.printAll();
-        System.out.println("------------");
-        SMART_WATCH_SERVICE.printAll();
+
+        switch (printVar) {
+            case "p" -> {
+                PHONE_SERVICE.printAll();
+            }
+            case "l" -> {
+                LAPTOP_SERVICE.printAll();
+            }
+            case "s" -> {
+                SMART_WATCH_SERVICE.printAll();
+            }
+            default -> {
+                PHONE_SERVICE.printAll();
+                LAPTOP_SERVICE.printAll();
+                SMART_WATCH_SERVICE.printAll();
+            }
+        }
     }
 
     public static void addNewProducts(Scanner in) {
