@@ -33,13 +33,13 @@ public class PhoneService {
         repository.saveAll(phones);
     }
 
-    private Manufacturer getRandomManufacturer() {
+    public static Manufacturer getRandomManufacturer() {
         final Manufacturer[] values = Manufacturer.values();
         final int index = RANDOM.nextInt(values.length);
         return values[index];
     }
 
-    private CommunicationStandard getRandomCommunicationStandart() {
+    public static CommunicationStandard getRandomCommunicationStandart() {
         final CommunicationStandard[] values = CommunicationStandard.values();
         final int index = RANDOM.nextInt(values.length);
         return values[index];

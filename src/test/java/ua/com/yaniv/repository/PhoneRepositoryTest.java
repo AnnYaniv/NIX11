@@ -55,6 +55,11 @@ class PhoneRepositoryTest {
         }
     }
 
+    /**
+     * Save in {@link PhoneRepository#save(Phone)} a not-null reference with optionals.ifPresentOrElse
+     *
+     * @result phone save
+     */
     @Test
     void saveNotNull() {
         target.save(phone1);
@@ -63,6 +68,12 @@ class PhoneRepositoryTest {
         assertEquals(phones.get(0).getId(), phone1.getId());
     }
 
+    /**
+     * Save in {@link PhoneRepository#save(Phone)} a null reference with optionals.ifPresentOrElse
+     *
+     * @throws IllegalArgumentException
+     * @result phone don`t save and throw exception
+     */
     @Test
     void saveNull() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> target.save(phoneNull));

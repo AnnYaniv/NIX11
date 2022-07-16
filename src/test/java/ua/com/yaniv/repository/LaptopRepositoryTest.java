@@ -54,7 +54,11 @@ class LaptopRepositoryTest {
         }
     }
 
-
+    /**
+     * Save in {@link LaptopRepository#save(Laptop)}  a not-null reference with optionals.orElseThrow
+     *
+     * @result laptop save
+     */
     @Test
     void saveNotNull() {
         target.save(laptop1);
@@ -63,6 +67,12 @@ class LaptopRepositoryTest {
         assertEquals(laptops.get(0).getId(), laptop1.getId());
     }
 
+    /**
+     * Save in {@link LaptopRepository#save(Laptop)} a null reference with optionals.orElseThrow
+     *
+     * @throws IllegalArgumentException
+     * @result laptop don`t save and throw exception
+     */
     @Test
     void saveNull() {
         assertThrows(IllegalArgumentException.class, () -> target.save(laptopNull));

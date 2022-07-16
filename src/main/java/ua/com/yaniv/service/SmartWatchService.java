@@ -64,7 +64,7 @@ public class SmartWatchService {
         }
     }
 
-    private Manufacturer getRandomManufacturer() {
+    public static Manufacturer getRandomManufacturer() {
         final Manufacturer[] values = Manufacturer.values();
         final int index = RANDOM.nextInt(values.length);
         return values[index];

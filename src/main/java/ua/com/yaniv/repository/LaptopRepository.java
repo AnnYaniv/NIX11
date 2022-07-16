@@ -23,14 +23,13 @@ public class LaptopRepository implements CrudRepository<Laptop> {
 
     @Override
     public void save(Laptop product) {
-        if (product == null) {
+        Optional<Laptop> optionalLaptop = Optional.ofNullable(product);
+        LAPTOPS.add(optionalLaptop.orElseThrow(() -> {
             final IllegalArgumentException exception = new IllegalArgumentException("Cannot save a null laptop");
             logger.error(exception.getMessage(), exception);
             throw exception;
-        } else {
-            LAPTOPS.add(product);
-            logger.info("{} was saved", product);
-        }
+        }));
+        logger.info("{} was saved", product);
     }
 
     @Override

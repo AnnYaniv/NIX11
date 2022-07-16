@@ -8,10 +8,7 @@ import ua.com.yaniv.model.enums.Manufacturer;
 import ua.com.yaniv.model.enums.OS;
 import ua.com.yaniv.repository.LaptopRepository;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 public class LaptopService {
     private static final Random RANDOM = new Random();
@@ -69,19 +66,19 @@ public class LaptopService {
         }
     }
 
-    private Manufacturer getRandomManufacturer() {
+    public static Manufacturer getRandomManufacturer() {
         final Manufacturer[] values = Manufacturer.values();
         final int index = RANDOM.nextInt(values.length);
         return values[index];
     }
 
-    private DriveType getRandomDriveType() {
+    public static DriveType getRandomDriveType() {
         final DriveType[] values = DriveType.values();
         final int index = RANDOM.nextInt(values.length);
         return values[index];
     }
 
-    private OS getRandomOS() {
+    public static OS getRandomOS() {
         final OS[] values = OS.values();
         final int index = RANDOM.nextInt(values.length);
         return values[index];
