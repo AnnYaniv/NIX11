@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-public class SmartWatchService {
+public class SmartWatchService implements CrudService<SmartWatch>{
     private static final Random RANDOM = new Random();
     private static final Logger logger = LoggerFactory.getLogger(SmartWatchService.class);
     private final SmartWatchRepository repository = SmartWatchRepository.getInstance();
@@ -31,6 +31,7 @@ public class SmartWatchService {
         repository.saveAll(smartWatches);
     }
 
+    @Override
     public boolean save(SmartWatch smartWatch) {
         try {
             repository.save(smartWatch);
@@ -41,18 +42,27 @@ public class SmartWatchService {
         }
     }
 
-    public void saveAll(List<SmartWatch> products) {
-        repository.saveAll(products);
+    @Override
+    public boolean saveAll(List<SmartWatch> products) {
+        return repository.saveAll(products);
     }
 
+    @Override
     public boolean delete(String id) {
         return repository.delete(id);
     }
 
+    @Override
+    public List<SmartWatch> getAll() {
+        return repository.getAll();
+    }
+
+    @Override
     public Optional<SmartWatch> findById(String id) {
         return repository.findById(id);
     }
 
+    @Override
     public boolean update(String id, SmartWatch smartWatch) {
         smartWatch.setId(id);
         return repository.update(smartWatch);

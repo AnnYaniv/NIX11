@@ -10,7 +10,7 @@ import ua.com.yaniv.repository.LaptopRepository;
 
 import java.util.*;
 
-public class LaptopService {
+public class LaptopService implements CrudService<Laptop>{
     private static final Random RANDOM = new Random();
     private static final Logger logger = LoggerFactory.getLogger(LaptopService.class);
     private final LaptopRepository repository = LaptopRepository.getInstance();
@@ -32,6 +32,7 @@ public class LaptopService {
         saveAll(laptops);
     }
 
+    @Override
     public boolean save(Laptop laptop) {
         try {
             repository.save(laptop);
@@ -43,18 +44,26 @@ public class LaptopService {
         }
     }
 
-    public void saveAll(List<Laptop> products) {
-        repository.saveAll(products);
+    @Override
+    public boolean saveAll(List<Laptop> products) {
+        return repository.saveAll(products);
     }
 
+    @Override
     public boolean delete(String id) {
         return repository.delete(id);
+    }
+
+    @Override
+    public List<Laptop> getAll() {
+        return repository.getAll();
     }
 
     public Optional<Laptop> findById(String id) {
         return repository.findById(id);
     }
 
+    @Override
     public boolean update(String id, Laptop laptop) {
         laptop.setId(id);
         return repository.update(laptop);

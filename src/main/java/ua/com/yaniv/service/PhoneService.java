@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-public class PhoneService {
+public class PhoneService implements CrudService<Phone> {
     private static final Random RANDOM = new Random();
     private static final Logger logger = LoggerFactory.getLogger(PhoneService.class);
     private final PhoneRepository repository = PhoneRepository.getInstance();
@@ -51,6 +51,7 @@ public class PhoneService {
         }
     }
 
+    @Override
     public boolean save(Phone phone) {
         try {
             repository.save(phone);
@@ -61,19 +62,28 @@ public class PhoneService {
         }
     }
 
-    public void saveAll(List<Phone> products) {
-        repository.saveAll(products);
+    @Override
+    public boolean saveAll(List<Phone> products) {
+        return repository.saveAll(products);
     }
 
+    @Override
     public boolean update(String id, Phone phone) {
         phone.setId(id);
         return repository.update(phone);
     }
 
+    @Override
     public boolean delete(String id) {
         return repository.delete(id);
     }
 
+    @Override
+    public List<Phone> getAll() {
+        return repository.getAll();
+    }
+
+    @Override
     public Optional<Phone> findById(String id) {
         return repository.findById(id);
     }
