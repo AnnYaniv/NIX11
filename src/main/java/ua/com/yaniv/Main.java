@@ -16,6 +16,7 @@ import ua.com.yaniv.service.LaptopService;
 import ua.com.yaniv.service.PhoneService;
 import ua.com.yaniv.service.ProductService;
 import ua.com.yaniv.service.SmartWatchService;
+import ua.com.yaniv.service.Container;
 
 import java.util.Optional;
 import java.util.Scanner;
@@ -25,13 +26,90 @@ public class Main {
     private static final PhoneService PHONE_SERVICE = new PhoneService();
     private static final LaptopService LAPTOP_SERVICE = new LaptopService();
     private static final SmartWatchService SMART_WATCH_SERVICE = new SmartWatchService();
+    private static Container container;
 
     private static ProductService productService;
     private static String printVar = "a";
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        startOptionals(in);
+        startContainer(in);
+    }
+
+    public static int startContainer(Scanner in) {
+        String choice;
+        System.out.println("Choose product for work with");
+        System.out.print("Print l - for laptop, p - for phone, s - for smart watch, another letters to exit: ");
+        choice = in.nextLine();
+        switch (choice) {
+            case "l" -> {
+                container = new Container<Laptop>();
+                printVar = "l";
+            }
+            case "p" -> {
+                container = new Container<Phone>();
+                printVar = "p";
+            }
+            case "s" -> {
+                container = new Container<SmartWatch>();
+                printVar = "s";
+            }
+            default -> {
+                System.out.println("Skipped");
+                return 1;
+            }
+        }
+
+        while (true) {
+            System.out.print("Print `y` - to add products, another letters to skip:");
+            choice = in.nextLine();
+            if (choice.equals("y")) {
+                switch (printVar){
+                    case "l" -> container.save(writeLaptop(in, true));
+                    case "p" -> container.save(writePhone(in, true));
+                    case "s" -> container.save(writeSmartWatch(in, true));
+                }
+            }
+            else System.out.println("Skipped");
+            System.out.print(container);
+            System.out.print("Print `y` - to delete products, another letters to skip:");
+            choice = in.nextLine();
+            if (choice.equals("y")) {
+                System.out.print("Print id: ");
+                String id = in.nextLine();
+                boolean res = container.delete(id);
+                if (res) System.out.println("Product was deleted");
+                else System.out.println("Product wasn`t deleted");
+            }
+            else System.out.println("Skipped");
+            System.out.print("Print `y` - to add discount, another letters to skip:");
+            choice = in.nextLine();
+            if (choice.equals("y")) {
+                System.out.print("Print id: ");
+                String id = in.nextLine();
+                boolean res = container.setRandomDiscount(id);
+                if (res) System.out.println("Product discount was changed");
+                else System.out.println("Product discount wasn`t changed");
+            }
+            System.out.print("Print `y` - to add product count by id, another letters to skip:");
+            choice = in.nextLine();
+            if (choice.equals("y")) {
+                System.out.print("Print id: ");
+                String id = in.nextLine();
+                System.out.print("Print count to add: ");
+                double count = in.nextDouble();
+                in.nextLine();
+                boolean res = container.provideProductsById(id, count);
+                if (res) System.out.println("Product count was changed");
+                else System.out.println("Product count wasn`t changed");
+            }
+
+            System.out.print("Print 'exit' - to exit, another letters to continue: ");
+            choice = in.nextLine();
+            if (choice.equals("exit")) {
+                return 0;
+            }
+        }
     }
 
     public static int startOptionals(Scanner in) {
