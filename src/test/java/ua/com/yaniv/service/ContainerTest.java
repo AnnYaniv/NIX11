@@ -24,7 +24,8 @@ class ContainerTest {
         id2 = smartWatch2.getId();
         id3 = smartWatch3.getId();
 
-        target = new Container<>(asList(smartWatch1, smartWatch2));
+        target = new Container<>();
+        target.saveAll(asList(smartWatch1, smartWatch2));
     }
 
     @Test

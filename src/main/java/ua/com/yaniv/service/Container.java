@@ -6,7 +6,6 @@ import ua.com.yaniv.model.Product;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 public class Container<E extends Product> {
     private static final double MAX_DISCOUNT = 30;
     private static final double MIN_DISCOUNT = 10;
@@ -18,19 +17,19 @@ public class Container<E extends Product> {
         products = new LinkedList<>();
     }
 
-    public Container(List<E> initList) {
-        this();
-        for (E product : initList) {
-            products.add(product);
-        }
-    }
-
     public boolean save(E product) {
         if (product == null) throw new IllegalArgumentException("Cannot save a null product");
         if (findById(product.getId()).isEmpty()) {
             products.add(product);
             return true;
         } else return false;
+    }
+
+    public boolean saveAll(List<E> listProducts) {
+        for(E product : listProducts){
+            if(!save(product)) return false;
+        }
+        return true;
     }
 
     public boolean delete(String id) {
