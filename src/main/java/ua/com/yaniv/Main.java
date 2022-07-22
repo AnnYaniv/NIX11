@@ -1,10 +1,7 @@
 package ua.com.yaniv;
 
 import org.apache.commons.lang3.EnumUtils;
-import ua.com.yaniv.model.Laptop;
-import ua.com.yaniv.model.Phone;
-import ua.com.yaniv.model.Product;
-import ua.com.yaniv.model.SmartWatch;
+import ua.com.yaniv.model.*;
 import ua.com.yaniv.model.enums.CommunicationStandard;
 import ua.com.yaniv.model.enums.DriveType;
 import ua.com.yaniv.model.enums.Manufacturer;
@@ -17,9 +14,10 @@ import ua.com.yaniv.service.PhoneService;
 import ua.com.yaniv.service.ProductService;
 import ua.com.yaniv.service.SmartWatchService;
 import ua.com.yaniv.service.Container;
+import ua.com.yaniv.structures.MyLinkedList;
+import ua.com.yaniv.structures.ProductComparator;
 
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
@@ -27,13 +25,189 @@ public class Main {
     private static final LaptopService LAPTOP_SERVICE = new LaptopService();
     private static final SmartWatchService SMART_WATCH_SERVICE = new SmartWatchService();
     private static Container container;
-
     private static ProductService productService;
     private static String printVar = "a";
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        startContainer(in);
+        startSort();
+        startMyLinkedList();
+    }
+
+    public static void startMyLinkedList() {
+        Laptop laptop1, laptop2, laptop3;
+
+        laptop1 = new Laptop(
+                "Xiaomi-laptop",
+                12,
+                22900.99,
+                "Xiaomi",
+                Manufacturer.XIAOMI,
+                DriveType.SDD,
+                OS.WINDOWS
+        );
+        laptop2 = new Laptop(
+                "Apple-laptop",
+                13,
+                22500.99,
+                "Apple",
+                Manufacturer.APPLE,
+                DriveType.SDD,
+                OS.MAC_OS
+        );
+        laptop3 = new Laptop(
+                "HUAWEI-laptop",
+                11,
+                22500.99,
+                "HUAWEI",
+                Manufacturer.HUAWEI,
+                DriveType.SDD,
+                OS.WINDOWS
+        );
+
+        MyLinkedList<Laptop> myLinkedList = new MyLinkedList<>();
+        myLinkedList.add(laptop1, 1);
+        myLinkedList.add(laptop1, 2);
+        myLinkedList.add(laptop2, 3);
+        try {
+            Thread.sleep(3600);
+        } catch (InterruptedException e) {
+            System.out.println("Thread interrupted");
+        }
+        myLinkedList.add(laptop2, 4);
+        myLinkedList.add(laptop2, 5);
+        myLinkedList.add(laptop3, 6);
+
+        printMyLinkedList(myLinkedList, "Products-in-custom-linked-list");
+
+        myLinkedList.deleteByVersion(1);//delete tail
+        printMyLinkedList(myLinkedList, "Products-after-delete-version-1");
+        myLinkedList.deleteByVersion(5);//delete random element
+        printMyLinkedList(myLinkedList, "Products-after-delete-version-5");
+        myLinkedList.deleteByVersion(6);//delete head
+        printMyLinkedList(myLinkedList, "Products-after-delete-version-6");
+        myLinkedList.deleteByVersion(50);//delete don`t exist
+        printMyLinkedList(myLinkedList, "Products-after-delete-version-50");
+
+        //count of versions
+        String id = laptop2.getId();
+        System.out.printf("Count of versions laptop with id %s - %d \n", id, myLinkedList.countVersionsById(id));
+
+        id = "random_id";//don't exist
+        System.out.printf("Count of versions laptop with id %s - %d \n", id, myLinkedList.countVersionsById(id));
+
+        final String dateId = laptop2.getId();
+        myLinkedList.firstVersionDateOfProductById(dateId).ifPresentOrElse(
+                (date) -> System.out.printf("Date of first version of product with id %s - %s%n", dateId, date),
+                () -> System.out.printf("Date of first version of product with id %s - not found%n", dateId)
+        );
+
+        myLinkedList.lastVersionDateOfProductById(dateId).ifPresentOrElse(
+                (date) -> System.out.printf("Date of last version of product with id %s - %s%n", dateId, date),
+                () -> System.out.printf("Date of last version of product with id %s - not found%n", dateId)
+        );
+
+        int version = 3;
+
+        myLinkedList.findByVersion(version).ifPresent(
+                (product) -> System.out.printf("Product before update - %s%n", product)
+        );
+
+        myLinkedList.updateByVersion(version, new Laptop(
+                "changed",
+                19,
+                99,
+                "changed",
+                Manufacturer.SAMSUNG,
+                DriveType.HDD,
+                OS.WINDOWS
+        ));
+        myLinkedList.findByVersion(version).ifPresent(
+                (product) -> System.out.printf("Product after update - %s%n", product)
+        );
+    }
+
+    public static void printMyLinkedList(MyLinkedList<Laptop> myLinkedList, String message) {
+        System.out.printf("----%s----%n", message);
+        for (VersionedProduct<Laptop> product : myLinkedList) {
+            System.out.println(product);
+        }
+    }
+
+    public static void startSort() {
+        Laptop laptop1, laptop2, laptop3, laptop4, laptop5, laptop6;
+
+        laptop1 = new Laptop(
+                "Laptop",
+                12,
+                22900.99,
+                "price",
+                Manufacturer.XIAOMI,
+                DriveType.SDD,
+                OS.WINDOWS
+        );
+        laptop2 = new Laptop(
+                "Laptopg",
+                13,
+                22500.99,
+                "name",
+                Manufacturer.APPLE,
+                DriveType.SDD,
+                OS.MAC_OS
+        );
+        laptop3 = new Laptop(
+                "Laptopa",
+                11,
+                22500.99,
+                "name",
+                Manufacturer.HUAWEI,
+                DriveType.SDD,
+                OS.WINDOWS
+        );
+        laptop4 = new Laptop(
+                "Laptopy",
+                1,
+                22500.99,
+                "count",
+                Manufacturer.XIAOMI,
+                DriveType.SDD,
+                OS.WINDOWS
+        );
+        laptop5 = new Laptop(
+                "Laptopy",
+                113,
+                22500.99,
+                "count",
+                Manufacturer.XIAOMI,
+                DriveType.SDD,
+                OS.WINDOWS
+        );
+        laptop6 = new Laptop(
+                "Laptopy",
+                12,
+                22600.99,
+                "price",
+                Manufacturer.XIAOMI,
+                DriveType.SDD,
+                OS.WINDOWS
+        );
+
+        List<Laptop> compareTest = new ArrayList<Laptop>();
+        compareTest.add(laptop1);
+        compareTest.add(laptop2);
+        compareTest.add(laptop3);
+        compareTest.add(laptop4);
+        compareTest.add(laptop5);
+        compareTest.add(laptop6);
+        System.out.println("----Before-Sort----");
+        for (Laptop laptop : compareTest) {
+            System.out.println(laptop);
+        }
+        System.out.println("----After-Sort----");
+        compareTest.sort(new ProductComparator<>());
+        for (Laptop laptop : compareTest) {
+            System.out.println(laptop);
+        }
     }
 
     public static int startContainer(Scanner in) {
@@ -64,13 +238,12 @@ public class Main {
             System.out.print("Print `y` - to add products, another letters to skip:");
             choice = in.nextLine();
             if (choice.equals("y")) {
-                switch (printVar){
+                switch (printVar) {
                     case "l" -> container.save(writeLaptop(in, true));
                     case "p" -> container.save(writePhone(in, true));
                     case "s" -> container.save(writeSmartWatch(in, true));
                 }
-            }
-            else System.out.println("Skipped");
+            } else System.out.println("Skipped");
             System.out.print(container);
             System.out.print("Print `y` - to delete products, another letters to skip:");
             choice = in.nextLine();
@@ -80,8 +253,7 @@ public class Main {
                 boolean res = container.delete(id);
                 if (res) System.out.println("Product was deleted");
                 else System.out.println("Product wasn`t deleted");
-            }
-            else System.out.println("Skipped");
+            } else System.out.println("Skipped");
             System.out.print("Print `y` - to add discount, another letters to skip:");
             choice = in.nextLine();
             if (choice.equals("y")) {
