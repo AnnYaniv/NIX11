@@ -34,6 +34,8 @@ public class Main {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         startContainer(in);
+        printVar = "a";
+        start(in); // work with services
     }
 
     public static int startContainer(Scanner in) {
