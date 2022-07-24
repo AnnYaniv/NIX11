@@ -8,7 +8,6 @@ import ua.com.yaniv.model.enums.DriveType;
 import ua.com.yaniv.model.enums.Manufacturer;
 import ua.com.yaniv.model.enums.OS;
 
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -26,13 +25,13 @@ public class Laptop extends Product {
     public String toString() {
         return "Laptop{" +
                 "id='" + id + '\'' +
-                ", driveType=" + driveType +
-                ", os=" + os +
                 ", title='" + title + '\'' +
-                ", model='" + model + '\'' +
-                ", manufacturer=" + manufacturer +
                 ", count=" + count +
                 ", price=" + price +
+                ", driveType=" + driveType +
+                ", os=" + os +
+                ", model='" + model + '\'' +
+                ", manufacturer=" + manufacturer +
                 '}';
     }
 
