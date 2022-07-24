@@ -13,8 +13,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 //i`m sorry about this
 public class ProductService<E extends Product> {
-    CrudRepository<E> crudRepository;
-    Class type;
+    private CrudRepository<E> crudRepository;
+    private Class type;
 
     public ProductService(CrudRepository crudRepository) {
         this.crudRepository = crudRepository;
